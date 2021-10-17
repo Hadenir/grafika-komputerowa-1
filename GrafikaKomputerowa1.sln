@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31717.71
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrafikaKomputerowa1", "GrafikaKomputerowa1\GrafikaKomputerowa1.csproj", "{DF5E2189-4CFF-4112-94D2-0D253E840CE1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AEC7663C-5A30-4E2E-9BED-3CB4C8E14FF4}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DF5E2189-4CFF-4112-94D2-0D253E840CE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF5E2189-4CFF-4112-94D2-0D253E840CE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF5E2189-4CFF-4112-94D2-0D253E840CE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF5E2189-4CFF-4112-94D2-0D253E840CE1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {91146136-DBBC-4A8E-9D6C-EDDE6747A24C}
+	EndGlobalSection
+EndGlobal
