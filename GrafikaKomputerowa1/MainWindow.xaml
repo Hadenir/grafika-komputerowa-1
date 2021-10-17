@@ -19,7 +19,7 @@
                 <Button x:Name="SplitEdgeButton" Margin="5,0" Padding="5" Content="Split Edge" Click="SplitEdgeButton_Click" />
                 <Button x:Name="ResizeCircleButton" Margin="5,0" Padding="5" Content="Resize Circle" Click="ResizeCircleButton_Click" />
                 <Button x:Name="MoveEdgeButton" Margin="5,0" Padding="5" Content="Move Edge" Click="MoveEdgeButton_Click" />
-                <Button x:Name="MovePolygonButton" Margin="5,0" Padding="5" Content="Move Polygon" Click="MovePolygonButton_Click" />
+                <Button x:Name="MoveShapeButton" Margin="5,0" Padding="5" Content="Move Shape" Click="MoveShapeButton_Click" />
             </StackPanel>
         </StackPanel>
         <StackPanel x:Name="CanvasContainer" Margin="5" SizeChanged="CanvasContainer_SizeChanged">

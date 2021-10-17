@@ -84,9 +84,9 @@ namespace GrafikaKomputerowa1
             SwitchState<DraggingLineState>();
         }
 
-        private void MovePolygonButton_Click(object sender, RoutedEventArgs e)
+        private void MoveShapeButton_Click(object sender, RoutedEventArgs e)
         {
-            SwitchState<DraggingPolygonState>();
+            SwitchState<DraggingShapeState>();
         }
     }
 }
