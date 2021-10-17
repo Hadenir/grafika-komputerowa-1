@@ -15,9 +15,14 @@ namespace GrafikaKomputerowa1.States
             var clickedEdge = Scene.GetClickedLine(mousePosition);
             if (clickedEdge is null) return this;
 
-            var shape = Scene.Shapes.Where(x => x is Polygon).Cast<Polygon>()
-                .SingleOrDefault(x => x.GetVertices().Contains(clickedEdge.Start));
-            if(shape is Polygon polygon)
+            var shape = Scene.Shapes.Single(x => x.GetVertices().Contains(clickedEdge.Start));
+            if (shape is Line line)
+            {
+                Scene.Shapes.Remove(line);
+                Scene.Shapes.Add(new Line(line.Start, mousePosition.Clone()));
+                Scene.Shapes.Add(new Line(mousePosition, line.End));
+            }
+            else if (shape is Polygon polygon)
             {
                 polygon.Segments.Remove(clickedEdge);
                 polygon.Segments.Add(new Line(clickedEdge.Start, mousePosition));
