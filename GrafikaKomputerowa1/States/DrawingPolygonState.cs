@@ -1,5 +1,4 @@
 ﻿using GrafikaKomputerowa1.Shapes;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 
@@ -7,33 +6,38 @@ namespace GrafikaKomputerowa1.States
 {
     public class DrawingPolygonState : State
     {
-        private List<Line> drawnSegments = new();
+        private Shape? drawnShape;
 
         public DrawingPolygonState(Scene scene) : base(scene) { }
 
         protected override State OnMouseDown(Vertex mousePosition, MouseButton button)
         {
-            if (button == MouseButton.Right)
+            if (drawnShape is null)
             {
-                ClearSegmentsFromScene();
+                if (button != MouseButton.Left) return this;
 
-                return DefaultState();
+                drawnShape = new Line(mousePosition.Clone(), mousePosition);
+                Scene.Shapes.Add(drawnShape);
             }
-
-            if (button != MouseButton.Left) return this;
-
-            if (drawnSegments.Count() == 0)
+            else if (drawnShape is Line drawnLine)
             {
-                var newSegment = new Line(mousePosition.Clone(), mousePosition);
-                drawnSegments.Add(newSegment);
-                Scene.Shapes.Add(newSegment);
+                if (button != MouseButton.Left) return DefaultState();
+
+                Scene.Shapes.Remove(drawnShape);
+                var startLine = new Line(mousePosition, drawnLine.Start);
+                var endLine = new Line(drawnLine.End, mousePosition);
+                drawnShape = Polygon.WithSegments(new[] { drawnLine, endLine, startLine });
+                Scene.Shapes.Add(drawnShape);
             }
-            else
+            else if (drawnShape is Polygon drawnPolygon)
             {
-                var clickedVertex = Scene.GetClickedVertex(mousePosition)!;
-                var newSegment = new Line(clickedVertex, mousePosition);
-                drawnSegments.Add(newSegment);
-                Scene.Shapes.Add(newSegment);
+                if (button != MouseButton.Left) return DefaultState();
+
+                var lastSegment = drawnPolygon.Segments.Last();
+                var newVertex = lastSegment.Start.Clone();
+                var newSegment = new Line(lastSegment.Start, newVertex);
+                lastSegment.Start = newVertex;
+                drawnPolygon.Segments.Insert(drawnPolygon.Segments.Count - 1, newSegment);
             }
 
             return this;
@@ -41,9 +45,9 @@ namespace GrafikaKomputerowa1.States
 
         protected override State OnMouseMove(Vertex mousePosition)
         {
-            if (drawnSegments.Count() > 0)
+            if (drawnShape is not null)
             {
-                var lastVertex = drawnSegments.Last().End;
+                var lastVertex = drawnShape.GetVertices().Last();
                 lastVertex.Move(mousePosition);
             }
 
@@ -52,34 +56,12 @@ namespace GrafikaKomputerowa1.States
 
         protected override State OnKeyDown(Key key)
         {
-            if (drawnSegments.Count() < 2 || key != Key.Escape) return this;
+            if (key != Key.Escape) return this;
 
-            {
-                var lastSegment = drawnSegments.Last();
-                drawnSegments.Remove(lastSegment);
-                Scene.Shapes.Remove(lastSegment);
-            }
-            
-            if(drawnSegments.Count() > 1)
-            {
-                ClearSegmentsFromScene();
-
-                var firstSegment = drawnSegments.First();
-                var lastSegment = drawnSegments.Last();
-                var newSegment = new Line(lastSegment.End, firstSegment.Start);
-                drawnSegments.Add(newSegment);
-
-                var newPolygon = Polygon.WithSegments(drawnSegments);
-                Scene.Shapes.Add(newPolygon);
-            }
+            if (drawnShape is not null)
+                Scene.Shapes.Remove(drawnShape);
 
             return DefaultState();
-        }
-
-        private void ClearSegmentsFromScene()
-        {
-            foreach(var segment in drawnSegments)
-                Scene.Shapes.Remove(segment);
         }
     }
 }
