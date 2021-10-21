@@ -32,7 +32,20 @@ namespace GrafikaKomputerowa1
             try
             {
                 writeableBitmap.Lock();
-                FillPixels(0, 0, (int)writeableBitmap.Width, (int)writeableBitmap.Height, backgroundColor);
+
+                unsafe
+                {
+                    IntPtr backBuffer = writeableBitmap.BackBuffer;
+                    int w = (int)writeableBitmap.Width;
+                    int h = (int)writeableBitmap.Height;
+                    var bytesPerPixel = writeableBitmap.Format.BitsPerPixel / 8;
+
+                    for (int i = 0; i < w * h; i++)
+                    {
+                        *(int*)backBuffer = backgroundColor;
+                        backBuffer += bytesPerPixel;
+                    }
+                }
             }
             finally
             {
@@ -121,7 +134,7 @@ namespace GrafikaKomputerowa1
 
         private void DrawCross(int x, int y, int color)
         {
-            for(int j = y - 2; j <= y + 2; j++)
+            for (int j = y - 2; j <= y + 2; j++)
                 PutPixel(x, j, color);
             for (int i = x - 2; i <= x + 2; i++)
                 PutPixel(i, y, color);
