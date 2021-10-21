@@ -31,12 +31,19 @@ namespace GrafikaKomputerowa1.Shapes
     public interface Shape
     {
         public IEnumerable<Vertex> GetVertices();
+
+        public void ClearConstraints();
     }
 
     public class Line : Shape
     {
         public Vertex Start { get; set; }
         public Vertex End { get; set; }
+
+        public bool ConstrainedLength { get; set; }
+        public Line? ConstrainedLengthLine { get; set; }
+        public Line? ConstrainedParallelLine { get; set; }
+        public Circle? ConstrainedTangetCircle { get; set; }
 
         public int LengthSqrd => (End.X - Start.X) * (End.X - Start.X) + (End.Y - Start.Y) * (End.Y - Start.Y);
 
@@ -48,6 +55,14 @@ namespace GrafikaKomputerowa1.Shapes
 
         public IEnumerable<Vertex> GetVertices() => new[] { Start, End };
 
+        public void ClearConstraints()
+        {
+            ConstrainedLength = false;
+            ConstrainedLengthLine = null;
+            ConstrainedParallelLine = null;
+            ConstrainedTangetCircle = null;
+        }
+
         public static Line Between(int x1, int y1, int x2, int y2) => new(new Vertex(x1, y1), new Vertex(x2, y2));
     }
 
@@ -55,6 +70,10 @@ namespace GrafikaKomputerowa1.Shapes
     {
         public Vertex Center { get; set; }
         public int Radius { get; set; }
+
+        public bool ConstrainedCenter { get; set; }
+        public bool ConstrainedRadius { get; set; }
+        public Line? ConstrainedTangentLine { get; set; }
 
         public Circle(Vertex center, int radius)
         {
@@ -64,6 +83,13 @@ namespace GrafikaKomputerowa1.Shapes
 
         public IEnumerable<Vertex> GetVertices() => new[] { Center };
 
+        public void ClearConstraints()
+        {
+            ConstrainedCenter = false;
+            ConstrainedRadius = false;
+            ConstrainedTangentLine = null;
+        }
+
         public static Circle Create(int x, int y, int r) => new(new Vertex(x, y), r);
     }
 
@@ -72,6 +98,8 @@ namespace GrafikaKomputerowa1.Shapes
         public List<Line> Segments { get; } = new();
 
         public IEnumerable<Vertex> GetVertices() => Segments.Select(x => x.Start);
+
+        public void ClearConstraints() => throw new InvalidOperationException("Polygons don't support constraints!");
 
         public static Polygon WithSegments(IEnumerable<Line> segments)
         {

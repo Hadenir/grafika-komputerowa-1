@@ -1,7 +1,9 @@
 ﻿using GrafikaKomputerowa1.Shapes;
 using GrafikaKomputerowa1.States;
 using System;
+using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace GrafikaKomputerowa1
@@ -10,6 +12,8 @@ namespace GrafikaKomputerowa1
     {
         private readonly Canvas canvas = new();
         private readonly Scene scene = new();
+
+        private readonly IDictionary<object, Type> ButtonToStateMap;
 
         private State currentState;
 
@@ -21,11 +25,29 @@ namespace GrafikaKomputerowa1
 
             scene.Shapes.Add(Line.Between(100, 100, 200, 150));
             scene.Shapes.Add(Circle.Create(300, 300, 64));
+
+
+            ButtonToStateMap = new Dictionary<object, Type> {
+                {CreatePolygonButton, typeof(DrawingPolygonState)},
+                {CreateCircleButton, typeof(DrawingCircleState)},
+                {RemoveShapeButton, typeof(RemovingShapeState)},
+                {RemoveVertexButton, typeof(RemovingVertexState)},
+                {SplitEdgeButton, typeof(SplittingEdgeState)},
+                {ResizeCircleButton, typeof(ResizingCircleState)},
+                {MoveEdgeButton, typeof(DraggingLineState)},
+                {MoveShapeButton, typeof(DraggingShapeState)},
+                {ClearConstraintsButton, typeof(ClearingConstraintsState)},
+            };
         }
 
         private void SwitchState<T>() where T : State
         {
             currentState = (State)Activator.CreateInstance(typeof(T), scene)!;
+        }
+
+        private void SwitchState(Type T)
+        {
+            currentState = (State)Activator.CreateInstance(T, scene)!;
         }
 
         // ============================== UI Event Handlers ============================== 
@@ -49,44 +71,13 @@ namespace GrafikaKomputerowa1
             canvas.Render(scene.Shapes);
         }
 
-        private void CreatePolygonButton_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            SwitchState<DrawingPolygonState>();
-        }
+            var button = (Button)sender;
+            if (!ButtonToStateMap.TryGetValue(sender, out var newState))
+                throw new InvalidOperationException($"Undefined state for button: {button.Content}");
 
-        private void CreateCircleButton_Click(object sender, RoutedEventArgs e)
-        {
-            SwitchState<DrawingCircleState>();
-        }
-
-        private void RemoveShapeButton_Click(object sender, RoutedEventArgs e)
-        {
-            SwitchState<RemovingShapeState>();
-        }
-
-        private void RemoveVertexButton_Click(object sender, RoutedEventArgs e)
-        {
-            SwitchState<RemovingVertexState>();
-        }
-
-        private void SplitEdgeButton_Click(object sender, RoutedEventArgs e)
-        {
-            SwitchState<SplittingEdgeState>();
-        }
-
-        private void ResizeCircleButton_Click(object sender, RoutedEventArgs e)
-        {
-            SwitchState<ResizingCircleState>();
-        }
-
-        private void MoveEdgeButton_Click(object sender, RoutedEventArgs e)
-        {
-            SwitchState<DraggingLineState>();
-        }
-
-        private void MoveShapeButton_Click(object sender, RoutedEventArgs e)
-        {
-            SwitchState<DraggingShapeState>();
+            SwitchState(newState);
         }
     }
 }

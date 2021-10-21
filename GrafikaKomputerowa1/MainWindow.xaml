@@ -12,14 +12,21 @@
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Background="LightGray">
             <StackPanel Margin="5" Orientation="Horizontal" MinHeight="25" >
-                <Button x:Name="CreatePolygonButton" Margin="5,0" Padding="5" Content="Create Polygon" Click="CreatePolygonButton_Click" />
-                <Button x:Name="CreateCircleButton" Margin="5,0" Padding="5" Content="Create Circle" Click="CreateCircleButton_Click" />
-                <Button x:Name="RemoveShapeButton" Margin="5,0" Padding="5" Content="Remove Shape" Click="RemoveShapeButton_Click" />
-                <Button x:Name="RemoveVertexButton" Margin="5,0" Padding="5" Content="Remove Vertex" Click="RemoveVertexButton_Click" />
-                <Button x:Name="SplitEdgeButton" Margin="5,0" Padding="5" Content="Split Edge" Click="SplitEdgeButton_Click" />
-                <Button x:Name="ResizeCircleButton" Margin="5,0" Padding="5" Content="Resize Circle" Click="ResizeCircleButton_Click" />
-                <Button x:Name="MoveEdgeButton" Margin="5,0" Padding="5" Content="Move Edge" Click="MoveEdgeButton_Click" />
-                <Button x:Name="MoveShapeButton" Margin="5,0" Padding="5" Content="Move Shape" Click="MoveShapeButton_Click" />
+                <StackPanel.Resources>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Margin" Value="5,0" />
+                        <Setter Property="Padding" Value="5" />
+                    </Style>
+                </StackPanel.Resources>
+                <Button x:Name="CreatePolygonButton" Content="Create Polygon" Click="Button_Click" />
+                <Button x:Name="CreateCircleButton" Content="Create Circle" Click="Button_Click" />
+                <Button x:Name="RemoveShapeButton" Content="Remove Shape" Click="Button_Click" />
+                <Button x:Name="RemoveVertexButton" Content="Remove Vertex" Click="Button_Click" />
+                <Button x:Name="SplitEdgeButton" Content="Split Edge" Click="Button_Click" />
+                <Button x:Name="ResizeCircleButton" Content="Resize Circle" Click="Button_Click" />
+                <Button x:Name="MoveEdgeButton" Content="Move Edge" Click="Button_Click" />
+                <Button x:Name="MoveShapeButton" Content="Move Shape" Click="Button_Click" />
+                <Button x:Name="ClearConstraintsButton" Content="Clear Constraints" Click="Button_Click" />
             </StackPanel>
         </StackPanel>
         <StackPanel x:Name="CanvasContainer" Margin="5" SizeChanged="CanvasContainer_SizeChanged">

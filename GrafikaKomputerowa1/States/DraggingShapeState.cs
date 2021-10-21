@@ -19,7 +19,7 @@ namespace GrafikaKomputerowa1.States
             if (selectedShape is not null) return DefaultState();
 
             var clickedVertex = Scene.GetClickedVertex(mousePosition);
-            selectedShape = Scene.Shapes.SingleOrDefault(x => x.GetVertices().Contains(clickedVertex));
+            selectedShape = Scene.GetShape(clickedVertex);
             offsets = selectedShape?.GetVertices().Select(x => x.Offset(mousePosition)).ToList();
 
             return this;

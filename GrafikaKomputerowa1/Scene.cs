@@ -49,6 +49,8 @@ namespace GrafikaKomputerowa1
             return closest;
         }
 
+        public Shape? GetShape(Vertex? vertex) => vertex is null ? null : Shapes.Single(x => x.GetVertices().Contains(vertex));
+
         private int DistanceToLineSqrd(Line line, Vertex point)
         {
             var px = line.End.X - line.Start.X;
