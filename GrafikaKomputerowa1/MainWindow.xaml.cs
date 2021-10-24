@@ -23,9 +23,41 @@ namespace GrafikaKomputerowa1
 
             SwitchState<DraggingState>();
 
-            scene.Shapes.Add(Line.Between(100, 100, 200, 150));
-            scene.Shapes.Add(Circle.Create(300, 300, 64));
 
+            var line1 = Line.Between(50, 50, 200, 150);
+            var circle1 = Circle.Create(50, 150, 0);
+            circle1.ConstrainedTangentLine = line1;
+            line1.ConstrainedTangetCircle = circle1;
+            circle1.Update();
+
+            var line2 = new Line(line1.End, new Vertex(200, 100));
+            var polygon1 = Polygon.WithSegments(new[]
+            {
+                line1,
+                line2,
+                new Line(line2.End, line1.Start),
+            });
+
+            var circle2 = Circle.Create(500, 500, 124);
+            circle2.ConstrainedCenter = true;
+
+            var line3 = Line.Between(300, 300, 300, 400);
+            var line5 = Line.Between(400, 400, 400, 300);
+            var line4 = new Line(line3.End, line5.Start);
+            var line6 = new Line(line5.End, line3.Start);
+
+            line3.ConstrainedLengthLine = line5;
+            line5.ConstrainedLengthLine = line3;
+
+            var polygon2 = Polygon.WithSegments(new[]
+            {
+                line3, line4, line5, line6
+            });
+
+            scene.Shapes.Add(circle1);
+            scene.Shapes.Add(polygon1);
+            scene.Shapes.Add(circle2);
+            scene.Shapes.Add(polygon2);
 
             ButtonToStateMap = new Dictionary<object, Type> {
                 {CreatePolygonButton, typeof(DrawingPolygonState)},
