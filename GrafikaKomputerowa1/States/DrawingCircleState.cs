@@ -44,5 +44,15 @@ namespace GrafikaKomputerowa1.States
 
             return this;
         }
+
+        protected override State OnKeyDown(Key key)
+        {
+            if (key != Key.Escape) return this;
+
+            if (drawnCircle is not null)
+                Scene.Shapes.Remove(drawnCircle);
+
+            return DefaultState();
+        }
     }
 }
