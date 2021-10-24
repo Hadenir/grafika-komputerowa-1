@@ -140,11 +140,7 @@ namespace GrafikaKomputerowa1.Shapes
                 segment.ClearConstraints();
         }
 
-        public void Update()
-        {
-            foreach (var segment in Segments)
-                segment.Update();
-        }
+        public void Update() { }
 
         public static Polygon WithSegments(IEnumerable<Line> segments)
         {
