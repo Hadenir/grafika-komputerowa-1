@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 
@@ -33,6 +34,8 @@ namespace GrafikaKomputerowa1.Shapes
         public IEnumerable<Vertex> GetVertices();
 
         public void ClearConstraints();
+
+        public void Update();
     }
 
     public class Line : Shape
@@ -58,9 +61,32 @@ namespace GrafikaKomputerowa1.Shapes
         public void ClearConstraints()
         {
             ConstrainedLength = false;
+
+            if (ConstrainedLengthLine is not null)
+                ConstrainedLengthLine.ConstrainedLengthLine = null;
             ConstrainedLengthLine = null;
+
+            if (ConstrainedParallelLine is not null)
+                ConstrainedParallelLine.ConstrainedParallelLine = null;
             ConstrainedParallelLine = null;
+
+            if (ConstrainedTangetCircle is not null)
+                ConstrainedTangetCircle.ConstrainedTangentLine = null;
             ConstrainedTangetCircle = null;
+        }
+
+        public void Update()
+        {
+            ConstrainedTangetCircle?.Update();
+
+            if(ConstrainedLengthLine is not null)
+            {
+                var offset = ConstrainedLengthLine.End.Offset(ConstrainedLengthLine.Start);
+                var d = Math.Sqrt((double)LengthSqrd / ConstrainedLengthLine.LengthSqrd);
+                offset.X = (int)(offset.X * d);
+                offset.Y = (int)(offset.Y * d);
+                ConstrainedLengthLine.Start.Move(ConstrainedLengthLine.End.Offset(offset));
+            }
         }
 
         public static Line Between(int x1, int y1, int x2, int y2) => new(new Vertex(x1, y1), new Vertex(x2, y2));
@@ -87,7 +113,16 @@ namespace GrafikaKomputerowa1.Shapes
         {
             ConstrainedCenter = false;
             ConstrainedRadius = false;
+            if(ConstrainedTangentLine is not null)
+                ConstrainedTangentLine.ConstrainedTangetCircle = null;
             ConstrainedTangentLine = null;
+        }
+
+        public void Update()
+        {
+            if (ConstrainedTangentLine is null) return;
+
+            Radius = (int)Math.Sqrt(Utils.DistanceToLineSqrd(ConstrainedTangentLine, Center));
         }
 
         public static Circle Create(int x, int y, int r) => new(new Vertex(x, y), r);
@@ -99,7 +134,17 @@ namespace GrafikaKomputerowa1.Shapes
 
         public IEnumerable<Vertex> GetVertices() => Segments.Select(x => x.Start);
 
-        public void ClearConstraints() => throw new InvalidOperationException("Polygons don't support constraints!");
+        public void ClearConstraints()
+        {
+            foreach (var segment in Segments)
+                segment.ClearConstraints();
+        }
+
+        public void Update()
+        {
+            foreach (var segment in Segments)
+                segment.Update();
+        }
 
         public static Polygon WithSegments(IEnumerable<Line> segments)
         {

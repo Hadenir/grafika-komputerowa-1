@@ -29,6 +29,8 @@ namespace GrafikaKomputerowa1.States
         {
             if (selectedShape is not null)
             {
+                if (selectedShape is Circle circle && circle.ConstrainedCenter) return this;
+
                 var vertices = selectedShape.GetVertices().ToList();
                 for (int i = 0; i < vertices.Count(); i++)
                 {
@@ -36,6 +38,8 @@ namespace GrafikaKomputerowa1.States
                     var newPosition = new Vertex(mousePosition.X + offset.X, mousePosition.Y + offset.Y);
                     vertices[i].Move(newPosition);
                 }
+
+                selectedShape.Update();
             }
 
             return this;

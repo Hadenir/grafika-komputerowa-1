@@ -20,6 +20,7 @@ namespace GrafikaKomputerowa1.States
                 .SingleOrDefault(x => x.GetVertices().Contains(clickedVertex));
             if(circle is null) return this;
             drawnCircle = circle;
+            drawnCircle.ClearConstraints();
 
             return this;
         }

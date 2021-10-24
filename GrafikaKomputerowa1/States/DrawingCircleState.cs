@@ -34,7 +34,7 @@ namespace GrafikaKomputerowa1.States
 
         protected override State OnMouseMove(Vertex mousePosition)
         {
-            if (drawnCircle is not null)
+            if (drawnCircle is not null && !drawnCircle.ConstrainedRadius)
             {
                 var centerVertex = drawnCircle.Center;
                 var radiusSqrd = new Line(centerVertex, mousePosition).LengthSqrd;

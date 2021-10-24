@@ -36,6 +36,10 @@ namespace GrafikaKomputerowa1
                 {ResizeCircleButton, typeof(ResizingCircleState)},
                 {MoveEdgeButton, typeof(DraggingLineState)},
                 {MoveShapeButton, typeof(DraggingShapeState)},
+                {ConstrainCenterButton, typeof(ConstrainingCenterState)},
+                {ConstrainRadiusButton, typeof(ConstrainingRadiusState)},
+                {ConstrainTangentButton, typeof(ConstrainingTangentState)},
+                {ConstrainLengthButton, typeof(ConstrainingLengthState)},
                 {ClearConstraintsButton, typeof(ClearingConstraintsState)},
             };
         }

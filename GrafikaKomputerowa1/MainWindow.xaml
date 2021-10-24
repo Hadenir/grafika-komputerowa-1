@@ -14,7 +14,7 @@
             <StackPanel Margin="5" Orientation="Horizontal" MinHeight="25" >
                 <StackPanel.Resources>
                     <Style TargetType="{x:Type Button}">
-                        <Setter Property="Margin" Value="5,0" />
+                        <Setter Property="Margin" Value="2,0" />
                         <Setter Property="Padding" Value="5" />
                     </Style>
                 </StackPanel.Resources>
@@ -26,6 +26,10 @@
                 <Button x:Name="ResizeCircleButton" Content="Resize Circle" Click="Button_Click" />
                 <Button x:Name="MoveEdgeButton" Content="Move Edge" Click="Button_Click" />
                 <Button x:Name="MoveShapeButton" Content="Move Shape" Click="Button_Click" />
+                <Button x:Name="ConstrainCenterButton" Content="Constrain Center" Click="Button_Click" />
+                <Button x:Name="ConstrainRadiusButton" Content="Constrain Radius" Click="Button_Click" />
+                <Button x:Name="ConstrainTangentButton" Content="Constrain Tangent" Click="Button_Click" />
+                <Button x:Name="ConstrainLengthButton" Content="Constrain Length" Click="Button_Click" />
                 <Button x:Name="ClearConstraintsButton" Content="Clear Constraints" Click="Button_Click" />
             </StackPanel>
         </StackPanel>

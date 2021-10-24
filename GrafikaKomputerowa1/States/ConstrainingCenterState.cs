@@ -1,27 +1,21 @@
 ﻿using GrafikaKomputerowa1.Shapes;
-using System;
-using System.Linq;
 using System.Windows.Input;
 
 namespace GrafikaKomputerowa1.States
 {
-    public class RemovingShapeState : State
+    public class ConstrainingCenterState : State
     {
-        public RemovingShapeState(Scene scene) : base(scene) { }
+        public ConstrainingCenterState(Scene scene) : base(scene) { }
 
         protected override State OnMouseDown(Vertex mousePosition, MouseButton button)
         {
             if (button != MouseButton.Left) return this;
 
             var clickedVertex = Scene.GetClickedVertex(mousePosition);
-            if (clickedVertex != null)
+            var clickedShape = Scene.GetShape(clickedVertex);
+            if (clickedShape is Circle circle)
             {
-                var shapes = Scene.Shapes.Where(x => x.GetVertices().Contains(clickedVertex));
-                foreach (var shape in shapes)
-                    shape.ClearConstraints();
-                
-                Scene.Shapes.RemoveAll(shapes.Contains);
-
+                circle.ConstrainedCenter = true;
                 return DefaultState();
             }
 
