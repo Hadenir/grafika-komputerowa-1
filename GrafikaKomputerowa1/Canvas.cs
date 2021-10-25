@@ -10,9 +10,11 @@ namespace GrafikaKomputerowa1
 {
     public sealed class Canvas
     {
-        private int foregroundColor = GetColor(0, 0, 0);
-        private int backgroundColor = GetColor(255, 255, 255);
-        private int crossColor = GetColor(255, 0, 0);
+        private int foregroundColor = GetColor(Colors.Black);
+        private int backgroundColor = GetColor(Colors.White);
+        private int crossColor = GetColor(Colors.Red);
+        private int constrainedColor = GetColor(Colors.Orange);
+        private int constrainedRadiusColor = GetColor(Colors.DarkGreen);
 
         private WriteableBitmap writeableBitmap;
 
@@ -65,16 +67,29 @@ namespace GrafikaKomputerowa1
                 {
                     if (shape is Line line)
                     {
-                        DrawLine(line.Start.X, line.Start.Y, line.End.X, line.End.Y, foregroundColor);
+                        if (line.ConstrainedLengthLine is not null || line.ConstrainedTangetCircle is not null)
+                            DrawLine(line.Start.X, line.Start.Y, line.End.X, line.End.Y, constrainedColor);
+                        else
+                            DrawLine(line.Start.X, line.Start.Y, line.End.X, line.End.Y, foregroundColor);
                     }
                     if (shape is Polygon polygon)
                     {
                         foreach (var segment in polygon.Segments)
-                            DrawLine(segment.Start.X, segment.Start.Y, segment.End.X, segment.End.Y, foregroundColor);
+                        {
+                            if (segment.ConstrainedLengthLine is not null || segment.ConstrainedTangetCircle is not null)
+                                DrawLine(segment.Start.X, segment.Start.Y, segment.End.X, segment.End.Y, constrainedColor);
+                            else
+                                DrawLine(segment.Start.X, segment.Start.Y, segment.End.X, segment.End.Y, foregroundColor);
+                        }
                     }
                     else if (shape is Circle circle)
                     {
-                        DrawCircle(circle.Center.X, circle.Center.Y, circle.Radius, foregroundColor);
+                        if (circle.ConstrainedRadius)
+                            DrawCircle(circle.Center.X, circle.Center.Y, circle.Radius, constrainedRadiusColor);
+                        else if (circle.ConstrainedTangentLine is not null)
+                            DrawCircle(circle.Center.X, circle.Center.Y, circle.Radius, constrainedColor);
+                        else
+                            DrawCircle(circle.Center.X, circle.Center.Y, circle.Radius, foregroundColor);
                     }
                 }
 

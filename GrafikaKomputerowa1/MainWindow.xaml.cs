@@ -24,13 +24,13 @@ namespace GrafikaKomputerowa1
             SwitchState<DraggingState>();
 
 
-            var line1 = Line.Between(50, 50, 200, 150);
-            var circle1 = Circle.Create(50, 150, 0);
+            var line1 = Line.Between(100, 50, 350, 150);
+            var circle1 = Circle.Create(100, 150, 0);
             circle1.ConstrainedTangentLine = line1;
             line1.ConstrainedTangetCircle = circle1;
             circle1.Update();
 
-            var line2 = new Line(line1.End, new Vertex(200, 100));
+            var line2 = new Line(line1.End, new Vertex(350, 50));
             var polygon1 = Polygon.WithSegments(new[]
             {
                 line1,

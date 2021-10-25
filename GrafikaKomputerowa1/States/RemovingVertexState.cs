@@ -19,7 +19,11 @@ namespace GrafikaKomputerowa1.States
             if(shapes.Count() > 1)
             {
                 foreach(var shape in shapes)
+                {
+                    shape.ClearConstraints();
                     Scene.Shapes.Remove(shape);
+                }
+                    
             }
             else if(shapes.Count() == 1 && shapes.First() is Polygon polygon)
             {
@@ -27,6 +31,8 @@ namespace GrafikaKomputerowa1.States
 
                 var firstSegment = polygon.Segments.Single(x => x.End == clickedVertex);
                 var secondSegment = polygon.Segments.Single(x => x.Start == clickedVertex);
+                firstSegment.ClearConstraints();
+                secondSegment.ClearConstraints();
                 polygon.Segments.Remove(firstSegment);
                 polygon.Segments.Remove(secondSegment);
                 polygon.Segments.Add(new Line(firstSegment.Start, secondSegment.End));

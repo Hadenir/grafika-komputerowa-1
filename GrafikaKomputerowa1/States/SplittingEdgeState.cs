@@ -18,12 +18,14 @@ namespace GrafikaKomputerowa1.States
             var shape = Scene.Shapes.Single(x => x.GetVertices().Contains(clickedEdge.Start));
             if (shape is Line line)
             {
+                line.ClearConstraints();
                 Scene.Shapes.Remove(line);
                 Scene.Shapes.Add(new Line(line.Start, mousePosition.Clone()));
                 Scene.Shapes.Add(new Line(mousePosition, line.End));
             }
             else if (shape is Polygon polygon)
             {
+                clickedEdge.ClearConstraints();
                 polygon.Segments.Remove(clickedEdge);
                 polygon.Segments.Add(new Line(clickedEdge.Start, mousePosition));
                 polygon.Segments.Add(new Line(mousePosition, clickedEdge.End));

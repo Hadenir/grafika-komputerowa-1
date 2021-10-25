@@ -40,6 +40,7 @@ namespace GrafikaKomputerowa1.States
                 }
 
                 selectedShape.Update();
+                if (selectedShape is Polygon polygon) polygon.Segments.ForEach(x => x.Update());
             }
 
             return this;
