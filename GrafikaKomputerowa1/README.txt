@@ -28,6 +28,11 @@ W górnej części okna znajdują się narzędzia pozwalające edytować scenę:
 - Wyczyszczenie ograniczeń z kształtu
 
 ZAŁOŻENIA I RELACJE
+Scena w edytorze jest reprezentowana jako lista kształtów. Kształtem moze być:
+	- Odcinek, przedstawiany jako para wierzchołkow opisujących jego początek i koniec;
+	- Okrąg, przedstawiany jako jego środek oraz dlugość promienia;
+	- Wielokąt, będący listą odcinków, mających parami wspólne wierzchołki.
+
 Edytor zakłada, że każdy kształt (odcinek, okrąg) może przyjmować naraz wyłącznie 1 relację. Dodając kolejną relację, poprzednia jest zawsze usuwana.
 Zapewnianie styczności okręgu polega, na dobieraniu jemu odpowiedniego promienia (równego odległości stycznego odcinka od środka okręgu).
 Utrzymywanie równej długości odcinków odbywa się poprzez jednakowe skalowanie obydwu odcinków, przy zmianie rozmiaru dowolnego z nich.
