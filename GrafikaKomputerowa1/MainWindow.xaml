@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GrafikaKomputerowa1"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1400"
-        MinWidth="1000" MinHeight="512"
+        MinWidth="1400" MinHeight="800"
         KeyDown="Window_KeyEvent">
 
     <DockPanel>
@@ -14,7 +14,7 @@
             <StackPanel Margin="5" Orientation="Horizontal" MinHeight="25" >
                 <StackPanel.Resources>
                     <Style TargetType="{x:Type Button}">
-                        <Setter Property="Margin" Value="2,0" />
+                        <Setter Property="Margin" Value="4,0" />
                         <Setter Property="Padding" Value="5" />
                     </Style>
                 </StackPanel.Resources>
@@ -31,6 +31,9 @@
                 <Button x:Name="ConstrainTangentButton" Content="Constrain Tangent" Click="Button_Click" />
                 <Button x:Name="ConstrainLengthButton" Content="Constrain Length" Click="Button_Click" />
                 <Button x:Name="ClearConstraintsButton" Content="Clear Constraints" Click="Button_Click" />
+                <CheckBox x:Name="AntialiasingCheckbox" VerticalAlignment="Center" VerticalContentAlignment="Center" Click="AntialiasingCheckbox_Click">
+                    <TextBlock Text="Antialiasing" VerticalAlignment="Center" />
+                </CheckBox>
             </StackPanel>
         </StackPanel>
         <StackPanel x:Name="CanvasContainer" Margin="5" SizeChanged="CanvasContainer_SizeChanged">

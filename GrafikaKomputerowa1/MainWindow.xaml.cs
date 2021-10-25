@@ -91,20 +91,20 @@ namespace GrafikaKomputerowa1
         private void CanvasContainer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             CanvasImage.Source = canvas.RecreateBitmap(e.NewSize.Width, e.NewSize.Height);
-            canvas.Render(scene.Shapes);
+            canvas.Render(scene.Shapes, AntialiasingCheckbox.IsChecked!.Value);
         }
 
         private void CanvasImage_MouseEvent(object sender, MouseEventArgs e)
         {
             var mousePosition = Vertex.From(e.GetPosition(CanvasImage));
             currentState = currentState.Handle(e, mousePosition);
-            canvas.Render(scene.Shapes);
+            canvas.Render(scene.Shapes, AntialiasingCheckbox.IsChecked!.Value);
         }
 
         private void Window_KeyEvent(object sender, KeyEventArgs e)
         {
             currentState = currentState.Handle(e);
-            canvas.Render(scene.Shapes);
+            canvas.Render(scene.Shapes, AntialiasingCheckbox.IsChecked!.Value);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -114,6 +114,11 @@ namespace GrafikaKomputerowa1
                 throw new InvalidOperationException($"Undefined state for button: {button.Content}");
 
             SwitchState(newState);
+        }
+
+        private void AntialiasingCheckbox_Click(object sender, RoutedEventArgs e)
+        {
+            canvas.Render(scene.Shapes, AntialiasingCheckbox.IsChecked!.Value);
         }
     }
 }

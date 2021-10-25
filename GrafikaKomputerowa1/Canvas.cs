@@ -55,7 +55,7 @@ namespace GrafikaKomputerowa1
             }
         }
 
-        public void Render(IEnumerable<Shape> shapes)
+        public void Render(IEnumerable<Shape> shapes, bool antialiasing = false)
         {
             try
             {
@@ -67,29 +67,37 @@ namespace GrafikaKomputerowa1
                 {
                     if (shape is Line line)
                     {
-                        if (line.ConstrainedLengthLine is not null || line.ConstrainedTangetCircle is not null)
-                            DrawLine(line.Start.X, line.Start.Y, line.End.X, line.End.Y, constrainedColor);
+                        int color = line.ConstrainedLengthLine is not null || line.ConstrainedTangetCircle is not null ? constrainedColor : foregroundColor;
+                        if (antialiasing)
+                            DrawLineWu(line.Start.X, line.Start.Y, line.End.X, line.End.Y, color);
                         else
-                            DrawLine(line.Start.X, line.Start.Y, line.End.X, line.End.Y, foregroundColor);
+                            DrawLine(line.Start.X, line.Start.Y, line.End.X, line.End.Y, color);
                     }
                     if (shape is Polygon polygon)
                     {
                         foreach (var segment in polygon.Segments)
                         {
-                            if (segment.ConstrainedLengthLine is not null || segment.ConstrainedTangetCircle is not null)
-                                DrawLine(segment.Start.X, segment.Start.Y, segment.End.X, segment.End.Y, constrainedColor);
+                            int color = segment.ConstrainedLengthLine is not null || segment.ConstrainedTangetCircle is not null ? constrainedColor : foregroundColor;
+                            if (antialiasing)
+                                DrawLineWu(segment.Start.X, segment.Start.Y, segment.End.X, segment.End.Y, color);
                             else
-                                DrawLine(segment.Start.X, segment.Start.Y, segment.End.X, segment.End.Y, foregroundColor);
+                                DrawLine(segment.Start.X, segment.Start.Y, segment.End.X, segment.End.Y, color);
                         }
                     }
                     else if (shape is Circle circle)
                     {
+                        int color;
                         if (circle.ConstrainedRadius)
-                            DrawCircle(circle.Center.X, circle.Center.Y, circle.Radius, constrainedRadiusColor);
+                            color = constrainedRadiusColor;
                         else if (circle.ConstrainedTangentLine is not null)
-                            DrawCircle(circle.Center.X, circle.Center.Y, circle.Radius, constrainedColor);
+                            color = constrainedColor;
                         else
-                            DrawCircle(circle.Center.X, circle.Center.Y, circle.Radius, foregroundColor);
+                            color = foregroundColor;
+
+                        if (antialiasing)
+                            DrawCircleWu(circle.Center.X, circle.Center.Y, circle.Radius, color);
+                        else
+                            DrawCircle(circle.Center.X, circle.Center.Y, circle.Radius, color);
                     }
                 }
 
@@ -213,6 +221,133 @@ namespace GrafikaKomputerowa1
             }
         }
 
+        private void PutPixelWu(int x, int y, int color, float brightness)
+        {
+            if (x < 0 || y < 0 || x >= writeableBitmap.Width || y >= writeableBitmap.Height) return;
+
+            unsafe
+            {
+                IntPtr backBuffer = writeableBitmap.BackBuffer;
+                backBuffer += y * writeableBitmap.BackBufferStride;
+                backBuffer += x * writeableBitmap.Format.BitsPerPixel / 8;
+
+                int r = (color >> 16) & 0xff;
+                int g = (color >> 8) & 0xff;
+                int b = (color >> 0) & 0xff;
+
+                r += (int)((255 - r) * (1.0f - brightness));
+                g += (int)((255 - g) * (1.0f - brightness));
+                b += (int)((255 - b) * (1.0f - brightness));
+
+                *(int*)backBuffer = (r << 16) | (g << 8) | b;
+            }
+        }
+
+        private void PutPixelWu4(int x, int y, int dx, int dy, int color, float brightness)
+        {
+            PutPixelWu(x + dx, y + dy, color, brightness);
+            PutPixelWu(x - dx, y + dy, color, brightness);
+            PutPixelWu(x + dx, y - dy, color, brightness);
+            PutPixelWu(x - dx, y - dy, color, brightness);
+        }
+
+        private void DrawLineWu(float x1, float y1, float x2, float y2, int color)
+        {
+            bool steep = Math.Abs(y2 - y1) > Math.Abs(x2 - x1);
+
+            if (steep)
+            {
+                Swap(ref x1, ref y1);
+                Swap(ref x2, ref y2);
+            }
+            if (x1 > x2)
+            {
+                Swap(ref x1, ref x2);
+                Swap(ref y1, ref y2);
+            }
+
+            var dx = x2 - x1;
+            var dy = y2 - y1;
+            var gradient = dy / dx;
+            if (dx == 0) gradient = 1.0f;
+
+            var xend = x1;
+            var yend = y1;
+            var xgap = RFPart(x1 + 0.5f);
+            int xpxl1 = (int)xend;
+            int ypxl1 = (int)yend;
+            if (steep)
+            {
+                PutPixelWu(ypxl1, xpxl1, color, RFPart(yend) * xgap);
+                PutPixelWu(ypxl1 + 1, xpxl1, color, FPart(yend) * xgap);
+            }
+            else
+            {
+                PutPixelWu(xpxl1, ypxl1, color, RFPart(yend) * xgap);
+                PutPixelWu(xpxl1, ypxl1 + 1, color, FPart(yend) * xgap);
+            }
+
+            var intery = yend + gradient;
+
+            xend = x2;
+            yend = y2;
+            xgap = RFPart(x2 + 0.5f);
+            var xpxl2 = (int)xend;
+            var ypxl2 = (int)yend;
+            if (steep)
+            {
+                PutPixelWu(ypxl2, xpxl2, color, RFPart(yend) * xgap);
+                PutPixelWu(ypxl2 + 1, xpxl2, color, FPart(yend) * xgap);
+            }
+            else
+            {
+                PutPixelWu(xpxl2, ypxl2, color, RFPart(yend) * xgap);
+                PutPixelWu(xpxl2, ypxl2 + 1, color, FPart(yend) * xgap);
+            }
+
+            if (steep)
+            {
+                for (var x = xpxl1 + 1; x <= xpxl2 - 1; x++)
+                {
+                    PutPixelWu(IPart(intery), x, color, RFPart(intery));
+                    PutPixelWu(IPart(intery) + 1, x, color, FPart(intery));
+                    intery += gradient;
+                }
+            }
+            else
+            {
+                for (var x = xpxl1 + 1; x <= xpxl2 - 1; x++)
+                {
+                    PutPixelWu(x, IPart(intery), color, RFPart(intery));
+                    PutPixelWu(x, IPart(intery) + 1, color, FPart(intery));
+                    intery += gradient;
+                }
+            }
+        }
+
+        private void DrawCircleWu(int x0, int y0, float r, int color)
+        {
+            var radius2 = r * r;
+            var quarter = Math.Round(radius2 / Math.Sqrt(radius2 + radius2));
+            for(var x = 0; x <= quarter; x++)
+            {
+                var y = r * (float)Math.Sqrt(1 - x * x / radius2);
+                var err = FPart(y);
+
+                PutPixelWu4(x0, y0, x, IPart(y), color, 1 - err);
+                PutPixelWu4(x0, y0, x, IPart(y)+1, color, err);
+            }
+
+            for(var y = 0; y <= quarter; y++)
+            {
+                var x = r * (float)Math.Sqrt(1 - y * y / radius2);
+                var err = FPart(x);
+
+                PutPixelWu4(x0, y0, IPart(x), y, color, 1 - err);
+                PutPixelWu4(x0, y0, IPart(x) + 1, y, color, err);
+            }
+        }
+
         private static int GetColor(Color color)
         {
             return GetColor(color.R, color.G, color.B);
@@ -229,5 +364,9 @@ namespace GrafikaKomputerowa1
             a = b;
             b = temp;
         }
+
+        private static float FPart(float x) => x - (float)Math.Floor(x);
+        private static int IPart(float x) => (int)Math.Floor(x);
+        private static float RFPart(float x) => 1 - FPart(x);
     }
 }
